@@ -1,16 +1,14 @@
 package com.prime.quickcart.order_service_api.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class OrderDetailResponseDTO {
-    private String orderId;
+    private String detailId;
     private String productId;
     private int qty;
     private double unitPrice;

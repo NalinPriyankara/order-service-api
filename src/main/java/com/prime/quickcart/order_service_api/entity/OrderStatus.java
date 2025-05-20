@@ -23,7 +23,7 @@ public class OrderStatus {
     @Column(name="status_id", unique=true, nullable=false, length=80)
     private String statusId;
     @Column(name="status", nullable=false, length=80, unique=true)
-    private Date status;
+    private String status;
 
     @OneToMany(mappedBy = "orderStatus")
     private Set<CustomerOrder> customerOrders = new HashSet<>();
