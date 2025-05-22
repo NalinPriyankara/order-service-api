@@ -8,6 +8,7 @@ import com.prime.quickcart.order_service_api.dto.response.paginate.CustomerOrder
 import com.prime.quickcart.order_service_api.entity.CustomerOrder;
 import com.prime.quickcart.order_service_api.entity.OrderDetail;
 import com.prime.quickcart.order_service_api.entity.OrderStatus;
+import com.prime.quickcart.order_service_api.exception.EntryNotFoundException;
 import com.prime.quickcart.order_service_api.repo.CustomerOrderRepo;
 import com.prime.quickcart.order_service_api.repo.OrderStatusRepo;
 import com.prime.quickcart.order_service_api.service.CustomerOrderService;
@@ -28,7 +29,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public void createOrder(CustomerOrderRequestDTO requestDTO) {
-        OrderStatus orderStatus = orderStatusRepo.findByStatus("PENDING").orElseThrow(() -> new RuntimeException("Order status not found. So you cannot create a new order. Please contact admin"));
+        OrderStatus orderStatus = orderStatusRepo.findByStatus("PENDING").orElseThrow(() -> new EntryNotFoundException("Order status not found. So you cannot create a new order. Please contact admin"));
 
         CustomerOrder customerOrder = new CustomerOrder();
         customerOrder.setOrderId(UUID.randomUUID().toString());
@@ -45,7 +46,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public void updateOrder(CustomerOrderRequestDTO requestDTO, String orderId) {
-        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new RuntimeException(String.format("Order not found with %s", orderId)));
+        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new EntryNotFoundException(String.format("Order not found with %s", orderId)));
         customerOrder.setOrderDate(requestDTO.getOrderDate());
         customerOrder.setTotalAmount(requestDTO.getTotalAmount());
         customerOrderRepo.save(customerOrder);
@@ -53,28 +54,28 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public void manageRemark(String remark, String orderId) {
-        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new RuntimeException(String.format("Order not found with %s", orderId)));
+        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new EntryNotFoundException(String.format("Order not found with %s", orderId)));
         customerOrder.setRemark(remark);
         customerOrderRepo.save(customerOrder);
     }
 
     @Override
     public void manageStatus(String status, String orderId) {
-        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new RuntimeException(String.format("Order not found with %s", orderId)));
-        OrderStatus orderStatus = orderStatusRepo.findByStatus(status).orElseThrow(() -> new RuntimeException("Order status not found. So you cannot create a new order. Please contact admin"));
+        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new EntryNotFoundException(String.format("Order not found with %s", orderId)));
+        OrderStatus orderStatus = orderStatusRepo.findByStatus(status).orElseThrow(() -> new EntryNotFoundException("Order status not found. So you cannot create a new order. Please contact admin"));
         customerOrder.setOrderStatus(orderStatus);
         customerOrderRepo.save(customerOrder);
     }
 
     @Override
     public CustomerOrderResponseDTO findOrderById(String orderId) {
-        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new RuntimeException(String.format("Order not found with %s", orderId)));
+        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new EntryNotFoundException(String.format("Order not found with %s", orderId)));
         return toCustomerOrderResponseDTO(customerOrder);
     }
 
     @Override
     public void deleteById(String orderId) {
-        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new RuntimeException(String.format("Order not found with %s", orderId)));
+        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new EntryNotFoundException(String.format("Order not found with %s", orderId)));
         customerOrderRepo.delete(customerOrder);
     }
 
