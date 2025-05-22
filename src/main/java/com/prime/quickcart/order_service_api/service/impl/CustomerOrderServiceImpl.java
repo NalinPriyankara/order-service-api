@@ -52,6 +52,21 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     }
 
     @Override
+    public void manageRemark(String remark, String orderId) {
+        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new RuntimeException(String.format("Order not found with %s", orderId)));
+        customerOrder.setRemark(remark);
+        customerOrderRepo.save(customerOrder);
+    }
+
+    @Override
+    public void manageStatus(String status, String orderId) {
+        CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new RuntimeException(String.format("Order not found with %s", orderId)));
+        OrderStatus orderStatus = orderStatusRepo.findByStatus(status).orElseThrow(() -> new RuntimeException("Order status not found. So you cannot create a new order. Please contact admin"));
+        customerOrder.setOrderStatus(orderStatus);
+        customerOrderRepo.save(customerOrder);
+    }
+
+    @Override
     public CustomerOrderResponseDTO findOrderById(String orderId) {
         CustomerOrder customerOrder = customerOrderRepo.findById(orderId).orElseThrow(() -> new RuntimeException(String.format("Order not found with %s", orderId)));
         return toCustomerOrderResponseDTO(customerOrder);
